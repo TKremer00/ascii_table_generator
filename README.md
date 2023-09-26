@@ -1,13 +1,12 @@
-# Options
+# ASCII Table Generator
 
-input (json of gui)
-input website?
+This is a project to generate ascii tables.
+For the working of this project visit this [link](https://asciitablegenerator.pages.dev/)
 
-optie voor credits
-genereer het ook naar een img.
 
-# Example
+## Example
 
+```
 +-----------+------------+
 | VIP Level | VIP Points |
 +-----------+------------+
@@ -43,3 +42,4 @@ genereer het ook naar een img.
 +-----------+------------+
 |  15 > 16  | 1,525,800  |
 +-----------+------------+
+```
