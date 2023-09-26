@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+  "ascii_table_frontend",
+  "ascii_table_generator"
+]

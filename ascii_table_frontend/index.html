@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+      /* http://meyerweb.com/eric/tools/css/reset/ 
+         v2.0 | 20110126
+         License: none (public domain)
+      */
+      *, *:before, *:after {
+          box-sizing: border-box;
+      }
+
+      html, body, div, span, applet, object, iframe,
+      h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+      a, abbr, acronym, address, big, cite, code,
+      del, dfn, em, img, ins, kbd, q, s, samp,
+      small, strike, strong, sub, sup, tt, var,
+      b, u, i, center,
+      dl, dt, dd, ol, ul, li,
+      fieldset, form, label, legend,
+      table, caption, tbody, tfoot, thead, tr, th, td,
+      article, aside, canvas, details, embed, 
+      figure, figcaption, footer, header, hgroup, 
+      menu, nav, output, ruby, section, summary,
+      time, mark, audio, video {
+      	margin: 0;
+      	padding: 0;
+      	border: 0;
+      	font-size: 100%;
+      	font: inherit;
+      	vertical-align: baseline;
+      }
+      /* HTML5 display-role reset for older browsers */
+      article, aside, details, figcaption, figure, 
+      footer, header, hgroup, menu, nav, section {
+      	display: block;
+      }
+      body {
+      	line-height: 1;
+      }
+      ol, ul {
+      	list-style: none;
+      }
+      blockquote, q {
+      	quotes: none;
+      }
+      blockquote:before, blockquote:after,
+      q:before, q:after {
+      	content: '';
+      	content: none;
+      }
+      table {
+      	border-collapse: collapse;
+      	border-spacing: 0;
+      }    
+
+      /* Custom style */
+      :root {
+        --text-color: rgb(33, 37, 41);
+        --background-color: white;
+        --background-color-highlight: rgb(248, 249, 250);
+        --input-background-color: transparent;
+        --input-border-color: #dee2e6;
+        --input-text-color: #212529;
+        --button-color: #fbfbfb;
+        --button-background-color: transparent;
+        --button-background-hover-color: #6c757d;
+        --button-border: solid .125rem #fbfbfb;
+        --button-primary-color: #00b74a;
+        --button-primary-border-color: #00b74a;
+
+        --highlight-gradient: linear-gradient(180deg, rgba(146,155,23,1) 10%, rgba(38,172,33,1) 50%, rgba(32,165,163,1) 90%);
+      }
+
+      html[data-theme="dark"] {
+        --text-color: white;
+        --background-color: #303030;
+        --background-color-highlight: #424242;
+        --input-background-color: transparent;
+        --input-text-color: hsla(0,0%,100%,.7);
+        --button-color: #fbfbfb;
+        --button-background-color: transparent;
+        --button-background-hover-color: #686868;
+        --button-border: solid .125rem #fbfbfb;
+        --button-primary-color: #00b74a;
+        --button-primary-border-color: #00b74a;
+
+        --highlight-gradient: linear-gradient(180deg, rgba(208,222,33,1) 10%, rgba(79,220,74,1) 50%, rgba(63,218,216,1) 90%);
+      }
+
+      body {
+        color: var(--text-color);
+        background-color: var(--background-color);
+      }
+      header {
+        display: flex; 
+        justify-content: center;      
+      }
+
+      .ascii_title,
+      #preview {
+        font-family: SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;
+      }
+
+      .ascii_title {
+        margin-block: 1.5rem;
+        background-image: var(--highlight-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin-inline: 1rem;
+      }
+
+      #editor {
+        --_row-guid-width: 3rem;
+      }
+
+      #editor .controls {
+        display: flex;
+        justify-content: center;
+        gap: 1em;
+        margin-block-end: 2em;
+        margin-inline-start: var(--_row-guid-width);
+      }
+
+      .primary-button {
+        color: var(--button-primary-color);
+        border-color: var(--button-primary-border-color);
+      }
+
+      button {
+        background-color: var(--button-background-color);
+        color: var(--button-color);
+        border: var(--button-border);
+        padding: .5rem 1.375rem .375rem;
+        cursor: pointer;
+      }
+
+      button:hover{
+        background-color: var(--button-background-hover-color);
+      }
+
+      button svg {
+        fill: var(--button-color);
+      }
+      
+      #editor .controls button {
+        font-weight: 500;
+        font-size: 1rem;
+        line-height: 1.5;
+        width: 10rem;
+      }
+
+      #editor .input .row,
+      #editor .input .guid-columns {
+        --_gaps: 1em;
+        display: flex;
+        justify-content: center;
+        gap: var(--_gaps);
+      }
+
+      #editor .input .row+.row {
+        margin-block-start: 1em;
+      }
+
+      #editor .input .guid-columns > * {
+        width: 100%;
+        text-align: center;
+        font-weight: bolder;
+      }
+
+      #editor .input .row-guid {
+        display: flex;
+        width: var(--_row-guid-width);
+        align-self: center;
+        justify-content: center;
+        margin-inline-end: calc(var(--_gaps) * -1);
+        font-weight: bolder;
+        flex-grow: 0;
+        flex-shrink: 0;
+      }
+
+      #editor .input textarea {
+        width: 100%;
+        max-width: 100%;
+        min-height: 4rem;
+        resize: vertical;
+        font-size: 1.65em;
+        background-color: var(--input-background-color);
+        color: var(--input-text-color);
+        border: 1px solid var(--input-border-color);
+      }
+
+      #preview {
+        display: grid;
+        place-content: center;
+      }
+
+      #preview .container {
+        padding: 2rem;
+        background-color: var(--background-color-highlight);
+        border-radius: 4px;
+        position: relative;
+      }
+
+      #preview .container div {
+        font-size: 1.2em;
+        white-space: pre;
+      }
+
+      #preview button {
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0.5rem;
+        border: none;
+        border-radius: 6px;
+        background-color: var(--button-background-hover-color);
+        transision: ease-in-out 250ms opacity;
+      }
+
+      #preview button::after {
+        content: 'copied!';
+        opacity: 0;
+        position: absolute;
+        top: 0.5rem;
+        right: 2.25rem;
+        background-color: var(--button-background-hover-color);
+        padding-inline-end: 1rem;
+        padding-inline-start: 0.25rem;
+        clip-path: polygon(0% 0%, 80% 0%, 80% 30%, 100% 50%, 80% 70%, 80% 100%, 0% 100%);
+        transision: ease-in-out 250ms opacity;
+      }
+
+      #preview button.active::after {
+        opacity: 1;
+      }
+
+
+      #preview .container:hover button,
+      #preview button.active {
+        opacity: 1;
+      }
+    </style>
+
+  </head>
+  <body>
+    <header>
+      <pre class="ascii_title">
+            _____  _____ _____ _____   _______       ____  _      ______    _____ ______ _   _ ______ _____         _______ ____  _____  
+     /\    / ____|/ ____|_   _|_   _| |__   __|/\   |  _ \| |    |  ____|  / ____|  ____| \ | |  ____|  __ \     /\|__   __/ __ \|  __ \ 
+    /  \  | (___ | |      | |   | |      | |  /  \  | |_) | |    | |__    | |  __| |__  |  \| | |__  | |__) |   /  \  | | | |  | | |__) |
+   / /\ \  \___ \| |      | |   | |      | | / /\ \ |  _ <| |    |  __|   | | |_ |  __| | . ` |  __| |  _  /   / /\ \ | | | |  | |  _  / 
+  / ____ \ ____) | |____ _| |_ _| |_     | |/ ____ \| |_) | |____| |____  | |__| | |____| |\  | |____| | \ \  / ____ \| | | |__| | | \ \ 
+ /_/    \_\_____/ \_____|_____|_____|    |_/_/    \_\____/|______|______|  \_____|______|_| \_|______|_|  \_\/_/    \_\_|  \____/|_|  \_\      
+      </pre>
+    </header>
+  
+    <main>
+      <div id="editor">
+        <div class="controls">
+          <button class="primary-button" data-action="addRow">Add Row</button>
+          <button class="primary-button" data-action="addColumn">Add Column</button>
+        </div>
+
+
+        <div class="input">
+          <div class="guid-columns">
+          </div>
+        </div>
+      </div>
+      <div id="preview">
+        <div class="container">
+          <button data-action="copy">
+            <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-copy js-clipboard-copy-icon">
+              <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+            </svg>
+          </button>
+          <div></div>
+        </div>
+      </div>
+    </main>
+
+
+    <script type="module">
+      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.querySelector('html').dataset.theme = 'dark';
+      } else {
+        document.querySelector('html').dataset.theme = 'light';
+      }
+
+      import init, { getTable, greet } from './pkg/ascii_table_frontend.js';
+      await init();
+
+      const DEFAULT_ROWS = 2;
+      const DEFAULT_COLUMNS = 2;
+
+      let numberOfColumns = DEFAULT_COLUMNS;
+      let numberOfRows = 0;
+      const INPUT_TABLE = document.querySelector('.input');
+
+      for(let i = 0; i < DEFAULT_ROWS; i++) {
+        INPUT_TABLE.append(makeRow(++numberOfRows));
+      }
+
+      document.querySelector('button[data-action="addRow"]').addEventListener('click', e => {
+        INPUT_TABLE.append(makeRow(++numberOfRows));
+      });
+
+      createTotalGuidColumns();
+      showPreview();
+
+      document.querySelector('button[data-action="addColumn"]').addEventListener('click', e => {
+          document.querySelector('.guid-columns').append(makeColumnGuid(numberOfColumns));
+          [...INPUT_TABLE.querySelectorAll('div.row')].forEach(element => {
+            element.append(makeColumn(numberOfColumns));
+          });
+          numberOfColumns++;
+      });
+
+      document.querySelector('button[data-action="copy"]').addEventListener('click', e => {
+        unsecuredCopyToClipboard(document.querySelector('#preview .container div').innerText);
+        const element = e.target.closest('button');
+        element.classList.toggle('active');
+        setTimeout(() => {
+          element.classList.toggle('active');
+        }, 2500);
+      });
+
+      function makeRow(index) {
+        const div = document.createElement('div');
+        div.classList.add('row');
+        div.classList.add(`row${index}`);
+        div.append(makeRowGuid(index));
+
+        for(let i = 0; i < numberOfColumns; i++) {
+          div.append(makeColumn(i));
+        }
+        return div;
+      }
+
+      function makeRowGuid(index) {
+        const rowGuid = document.createElement('div');
+        rowGuid.classList.add('row-guid');
+        const rowGuidText = document.createElement('p');
+        rowGuidText.innerText = index;
+        const deleteIcon = createDeleteIcon();
+        deleteIcon.dataset.row = index;
+        deleteIcon.addEventListener('click', deleteRow);
+        rowGuidText.append(deleteIcon);
+        rowGuid.append(rowGuidText);
+        return rowGuid;        
+      }
+
+      function makeColumn(index) {
+        const columnIndex = String.fromCharCode(65 + index);
+        const textArea = document.createElement('textarea');
+        textArea.classList.add('column');
+        textArea.classList.add(`column${columnIndex}`);
+        textArea.addEventListener('input', showPreview);
+        return textArea;
+      }
+
+      function makeColumnGuid(index) {
+        const columnGuidText = document.createElement('p');
+        const columnIndex = indexToChar(index);
+        columnGuidText.innerText = columnIndex;
+        const deleteIcon = createDeleteIcon();
+        deleteIcon.dataset.column = columnIndex;
+        deleteIcon.addEventListener('click', deleteColumn);
+        columnGuidText.prepend(deleteIcon);
+        return columnGuidText;
+      }
+
+      function indexToChar(index) {
+        return String.fromCharCode(65 + index);
+      }
+
+      function deleteRow(event) {
+        numberOfRows--;
+        const rowIndex = event.target.closest('i').dataset.row;
+
+        const rowToDelete = document.querySelector(`.row${rowIndex}`);
+        rowToDelete.parentNode.removeChild(rowToDelete);
+        
+        [...document.querySelectorAll('.row')].forEach((e,i) => {
+          e.removeChild(e.querySelector('.row-guid'));
+          e.prepend(makeRowGuid(i + 1));
+          e.classList.remove(...e.classList);
+          e.classList.add('row');
+          e.classList.add(`row${i + 1}`);
+        });
+
+        showPreview();
+      }
+
+      function deleteColumn(event) {
+        numberOfColumns--;
+        const columnIndex = event.target.closest('i').dataset.column;
+
+        document.querySelector('.guid-columns').innerHTML = '';
+        createTotalGuidColumns();
+
+        console.log(`.column${columnIndex}`);
+        console.log(document.querySelectorAll(`.column${columnIndex}`));
+
+        [...document.querySelectorAll(`.column${columnIndex}`)].forEach(e => {
+          console.log(e);
+          e.parentNode.removeChild(e);
+        });
+
+        [...document.querySelectorAll('.row')].forEach(e => {
+          [...e.querySelectorAll('.column')].forEach((x,i) => {
+            x.classList.remove(...x.classList);
+            x.classList.add('column');
+            x.classList.add(`column${indexToChar(i)}`)
+          });
+        });
+
+        showPreview();
+      }
+
+      function getTableData() {
+        const tableData = [...document.querySelectorAll('.row')].map(e => {
+          const columns = [...e.querySelectorAll('.column')].map(x => x.value);
+          return columns;
+        });
+        return tableData;
+      }
+
+      function createTotalGuidColumns() {
+        for(let i = 0; i < numberOfColumns; i++) {
+          document.querySelector('.guid-columns').append(makeColumnGuid(i));
+        }
+      }
+
+      function unsecuredCopyToClipboard(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.prepend(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            console.error('Unable to copy to clipboard', err);
+            alert('Unable to copy to clipboard');
+        }
+        document.body.removeChild(textArea);
+      }
+
+      function createDeleteIcon() {
+        const element = document.createElement('i');
+        element.classList.add('fas');
+        element.classList.add('fa-trash');
+        return element;
+      }
+
+      async function showPreview(_e) {
+        const data = getTableData();
+        const resp = await getTable(data);
+        console.log(resp);
+        document.querySelector('#preview .container div').innerText = resp;
+      }
+    </script>
+  </body>
+</html>
