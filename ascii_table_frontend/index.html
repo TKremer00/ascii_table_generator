@@ -383,6 +383,10 @@
       }
 
       function deleteRow(event) {
+        if (numberOfRows <= 1){
+          return;
+        }
+
         numberOfRows--;
         const rowIndex = event.target.closest('i').dataset.row;
 
@@ -401,6 +405,10 @@
       }
 
       function deleteColumn(event) {
+        if (numberOfColumns <= 1){
+          return;
+        }
+        
         numberOfColumns--;
         const columnIndex = event.target.closest('i').dataset.column;
 
