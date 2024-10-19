@@ -1,0 +1,1 @@
+nix-shell -p miniserve --run "miniserve --index index.html"
